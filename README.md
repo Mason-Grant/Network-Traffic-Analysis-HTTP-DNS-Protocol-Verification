@@ -33,3 +33,16 @@ This project is substantial as it mirrors real world network troubleshooting. Un
 
 
 
+<img src="Trafficlist.png" alt="Trafficlist" width="250">  The wireshark traffic list showing the green HTTP packets and blue DNS packets (we are focusing on 3763,4435 and 4443)
+
+
+<img src="HTTPpayload.png" alt="HTTPpayload" width="250">
+
+
+
+
+
+
+
+
+
