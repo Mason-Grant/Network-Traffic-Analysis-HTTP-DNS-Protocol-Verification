@@ -31,17 +31,43 @@ This project is substantial as it mirrors real world network troubleshooting. Un
 
 **6. Screenshots/Evidence**
 
+<p align="center">
+  <img src="Trafficlist.png" alt="Trafficlist" width="100%">
+</p>
+
+The wireshark traffic list showing the green HTTP packets and blue DNS packets (we are focusing on 3763,4435 and 4443)
 
 
-<img src="Trafficlist.png" alt="Trafficlist" width="250">  The wireshark traffic list showing the green HTTP packets and blue DNS packets (we are focusing on 3763,4435 and 4443)
+<p align="center">
+  <img src="HTTPpayload.png" alt="HTTPpayload width="100%">
+</p>
+
+The "Follow TCP stream" of the HTTP get request where we can see some details about the firmware of the server hosting the website due to the fact HTTP is not encrypted and is clear-text
 
 
-<img src="HTTPpayload.png" alt="HTTPpayload" width="250">
+<p align="Center"?
+  <img src="DNSquery.png" alt="Screenshot showing the DNS query in wireshark" width="100%">
+</p>
 
+A screenshot from wirehark showing an enhanced view of a captured DNS query packet. Here we can see DNS using UDP port 53 and the URL of the target website "neverssl.com"
 
+<p align="center">
+  <img src="IPV6.png" alt="IPv6 address of target" width="100%">
+</p>
 
+The IPv6 address of the target shown here. Due to my ISP IPv4 adresses are not used in the conventional way and are routed straight to my router as generic addresses i.e 192.168.1.1
 
+<p align="Center">
+  <img src="TCPhandshake.png" alt="the three way TCP handshake" width="100%">
+</p>
 
+Here we can clearly see the TCP handshake occuring syn, syn-ack and ack. ensuring a stable connection is being made. we can also see FIN,ACK packets showing that the data transfer finished and ended succinctly.
+
+<p align="center">
+  <img src="nslookup.png" alt="nslookup of target in parrot" width="800">
+</p>
+
+in order to ensure the correct packet was being analysed,by double checking the IPv6 address between wireshark and the CLI output, and to force DNS query packets to be detected by wireshark, due to the browser hiding this data from wireshark, nslookup was used on the target URL. here is the terminal output from an non-authoratative DNS server.
 
 
 
