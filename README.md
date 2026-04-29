@@ -1,40 +1,41 @@
 **1. Objective**
 
-With this project, the aim is to capture and analyse the complete process of a web request. by observing a DNS lookup, TCP handshake and finally HTTP get request conversation, to demonstrate an understanding of the OSI model and the encapsulation of data across a network.
+With this project, the aim is to capture and analyse the complete process of a web request. by observing a DNS lookup, TCP handshake, and finally HTTP GET request conversation, to demonstrate an understanding of the OSI model and the encapsulation of data across a network.
 
 
 **2. Setup**
 
 * Operating system: Parrot Security (running via Oracle Box on a Windows 11 machine)
-  * I chose parrot for this scenario as it comes pre-packaged with a litany of software that can be used(like wireshark). Furthermore, linux based operating systems are the standard in the working world making this scenario relevant practice.
+  * I chose Parrot for this scenario as it comes pre-packaged with a litany of software that can be used(like Wireshark). Furthermore, Linux-based operating systems are the standard in the working world, making this scenario a relevant practice.
 * Tools: Wireshark GUI and terminal CLI
   * I chose Wireshark for this task (specifically the version using a GUI) as it allows me to clearly document my findings, and there is no better tool when it comes to sniffing packets, with a whole host of additional information provided, allowing us to easily pivot from simple reconnaissance to network hardening. 
 * Network config: bridged adapter with promiscuous mode enabled
   * This is a vital network configuration, as without it, our VM isn't properly integrated into my local network. The bridged adapter means that the Parrot VM shares the same network qualities as my Windows machine, allowing us to actually connect to the local network and sniff packets using Wireshark. This is because of my lack of a static IP address so the IP we use is the generic 192.168.1.1 and unless we are on the same network as my router, we won't get anything on Wireshark when accessing the target website on my Windows machine.
+     * NOTE In a typical setting setting it would make much more sense to simply use the Parrot OS for the entire process instead of using the Windows machine. However, I wanted to make certain that this network configuration was working, and that my VM could properly sniff packets from other devices on my network. From my perspective, this exercise is incredibly low risk as I can monitor exactly who is connected to my router, and as you can see below, I have taken a multitude of measures to keep my Windows machine safe.
 * Target: HTTP://neverssl.com (chosen as the site is unencrypted for good, clear-text analysis)
   * This website has been chosen as a target for this scenario as it is widely known as a website that is 'safe' despite not utilizing HTTPS. This is important, as while I might be using a VM for the packet sniffing(a VM that I can deprovision whenever and re-provision each time I boot the VM meaning it is safe from malware), I am accessing the website from my Windows machine. Neverssl.com is frequently used for similar exercises like the one we are using today, and therefore helps mitigate the risks commonly associated with accessing HTTP-only websites.
 * Precautionary Measures: Windows Defender, backups, Windows Photo Editor(Redaction)
-  * Windows Defender is integral here, as when accessing websites that do not leverage HTTPS there is always a risk that a threat actor could access this clear-text information and potentially try to hack me in some way. Therefore, a good anti-virus is vital, as Windows Defender will make me aware of any unusual activity on my system(such as new admin accounts being made) or any malicious code being deployed on my system, helping me deploy effective counter measures if a breach were to occur.
+  * Windows Defender is integral here, as when accessing websites that do not leverage HTTPS, there is always a risk that a threat actor could access this clear-text information and potentially try to hack me in some way. Therefore, a good anti-virus is vital, as Windows Defender will make me aware of any unusual activity on my system(such as new admin accounts being made) or any malicious code being deployed on my system, helping me deploy effective countermeasures if a breach were to occur.
   * Backups are also integral. Allowing me to revert my machine to an earlier state, before the breach occurred. For example, if, while accessing the site, a hacker used the clear-text DNS to enact a DNS poisoning attack, in order to reroute my network traffic with faulty DNS replies, it could result in me being directed to malicious sites, causing my Windows machine to become infected with malware. With a backup once I am notified of this by Windows Defender, I have the option to completely roll back the system, keeping my computer safe from further infections as a result.
-  * Throughout this scenario I am gathering photographic evidence in the form of screenshots to help support the content laid out in this report. Within some of the raw screenshots was sensitive personal information that has been redacted to prevent a breach from occurring due to poorly managed information. 
+  * Throughout this scenario, I am gathering photographic evidence in the form of screenshots to help support the content laid out in this report. Within some of the raw screenshots was sensitive personal information that has been redacted to prevent a breach from occurring due to poorly managed information. 
 
 
 **3. Process**
-* ***Clear cache*** I cleared cache to prevent my browser from disrupting the capture of a clean DNS query. As parrot is debian-based DNS is not cached and i have not installed a daemon for this so just clearing cache within the browser is sufficient.
-* ***Wireshark setup*** Within the parrot CLI i ran 'Sudo Wireshark' to start wireshark. Then i selected eth0 from the list of options as this is my primary interface. I applied a filter to the captured of 'HTTP || DNS' ,to wireshark this HTTP or DNS, to remove unwanted traffic from the list.
-* ***Generation of target traffic*** using a browser i navigated to HTTP://neverssl.com in order to generate a DNS lookup and HTTP get request. I had to use the 'nslookup' command as my browser hid the DNS lookup from wireshark.
+* ***Clear cache*** I cleared cache to help prevent my browser from disrupting the capture of a clean DNS query. As Parrot is Debian-based, DNS is not cached, and I have not installed a daemon for this so just clearing cache within the browser is sufficient.
+* ***Wireshark setup*** Within the parrot CLI, I ran 'Sudo Wireshark' to start wireshark. Then I selected eth0 from the list of options as this is my primary interface. I applied a filter to the captured packets of 'HTTP || DNS' ,to Wireshark, to remove unwanted traffic from the list.
+* ***Generation of target traffic*** using a browser, I navigated to HTTP://neverssl.com in order to generate a DNS lookup and HTTP get request. I had to use the 'nslookup' command as my browser hid the DNS lookup from wireshark.
 * ***Analysis*** I discovered the DNS query(UDP port 53). Additionally, using the "Follow TCP stream" function I was able to locate the TCP handshake (SYN,SYN-ACK,ACK) and the HTTP get request conversation in clear-text.
 
 
 **4. Findings**
-* ***DNS Resolution*** I successfully captured the standard query for neverssl.com and the response, which linked the domain to the IPv6 address:" 2600:1f13:37c:1400:ba21:7165:5fc7:736e". Due to my Interet Service Provider, IPV4 addresses cannot be monitored using wireshark as all IPV4 requests go through my router and so have a standard IP i.e "192.168.1.1". Thankfully we can circumvent this issue with the use of IPV6 addresses. Using 'Nslookup' in parrot we can query the website and receive the correct IPv4 address.
-* ***Transport*** Using wireshark I confirmed that a successful TCP handshake was occuring. I observed the correct incrementation of the sequence and acknowledgement numbers, proving a stable connection was present.
-* ***Transparency*** Due to the site utilizing HTTP(port 80) as opposed to the more secure HTTPS(Port 443) I was able to read all the raw data in clear-text including HTTP headers and the servers 200 OK response.
+* ***DNS Resolution*** I successfully captured the standard query for neverssl.com and the response, which linked the domain to the IPv6 address:" 2600:1f13:37c:1400:ba21:7165:5fc7:736e". Due to my Internet Service Provider, IPV4 addresses cannot be monitored using wireshark as all IPV4 requests go through my ISP and then my router, and so have a standard IP i.e "192.168.1.1". Thankfully, we can circumvent this issue with the use of IPV6 addresses. Using 'Nslookup' in Parrot, we can query the website and receive the correct IPv4/IPv6 address.
+* ***Transport*** Using Wireshark, I confirmed that a successful TCP handshake was occurring. I observed the correct incrementation of the sequence and acknowledgement numbers, proving a stable connection was present.
+* ***Transparency*** Due to the site utilizing HTTP(port 80) as opposed to the more secure HTTPS(Port 443) I was able to read all the raw data in clear-text, including HTTP headers and the server's 200 OK response.
 
 
 **5. Explanation**
 
-This project is substantial as it mirrors real world network troubleshooting. Understanding the TCP handshake is vital to troubleshooting errors with unstable conections or blockages caused by firewalls.Moreover, seeing the stark contrast between unencrypted and encrypted traffic highlights the absolute importance of TLS/SSL in modern cybersecurity. This project demonstrated understanding of layers 3,4 and 7 of the OSI model, which is a critical foundation of networking.
+This project is substantial as it mirrors real-world network troubleshooting. Understanding the TCP handshake is vital to troubleshooting errors with unstable conections or blockages caused by firewalls.Moreover, seeing the stark contrast between unencrypted and encrypted traffic highlights the absolute importance of TLS/SSL in modern cybersecurity. This project demonstrated understanding of layers 3,4 and 7 of the OSI model, which is a critical foundation of networking.
 
 
 **6. Screenshots/Evidence**
