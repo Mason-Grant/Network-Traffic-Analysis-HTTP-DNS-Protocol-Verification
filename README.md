@@ -5,10 +5,18 @@ With this project, the aim is to capture and analyse the complete process of a w
 
 **2. Setup**
 
-Operating system: Parrot Security (running via Oracle Box on a Windows 11 machine)  
-Tools: Wireshark GUI and terminal CLI  
-Network config: bridged adapter with promiscuous mode enabled  
-Target: HTTP://neverssl.com (chosen as the site is unencrypted for good, clear-text analysis)  
+* Operating system: Parrot Security (running via Oracle Box on a Windows 11 machine)
+  * I chose parrot for this scenario as it comes pre-packaged with a litany of software that can be used(like wireshark). Furthermore, linux based operating systems are the standard in the working world making this scenario relevant practice.
+* Tools: Wireshark GUI and terminal CLI
+  * I chose Wireshark for this task (specifically the version using a GUI) as it allows me to clearly document my findings, and there is no better tool when it comes to sniffing packets, with a whole host of additional information provided, allowing us to easily pivot from simple reconnaissance to network hardening. 
+* Network config: bridged adapter with promiscuous mode enabled
+  * This is a vital network configuration, as without it, our VM isn't properly integrated into my local network. The bridged adapter means that the Parrot VM shares the same network qualities as my Windows machine, allowing us to actually connect to the local network and sniff packets using Wireshark. This is because of my lack of a static IP address so the IP we use is the generic 192.168.1.1 and unless we are on the same network as my router, we won't get anything on Wireshark when accessing the target website on my Windows machine.
+* Target: HTTP://neverssl.com (chosen as the site is unencrypted for good, clear-text analysis)
+  * This website has been chosen as a target for this scenario as it is widely known as a website that is 'safe' despite not utilizing HTTPS. This is important, as while I might be using a VM for the packet sniffing(a VM that I can deprovision whenever and re-provision each time I boot the VM meaning it is safe from malware), I am accessing the website from my Windows machine. Neverssl.com is frequently used for similar exercises like the one we are using today, and therefore helps mitigate the risks commonly associated with accessing HTTP-only websites.
+* Precautionary Measures: Windows Defender, backups, Windows Photo Editor(Redaction)
+  * Windows Defender is integral here, as when accessing websites that do not leverage HTTPS there is always a risk that a threat actor could access this clear-text information and potentially try to hack me in some way. Therefore, a good anti-virus is vital, as Windows Defender will make me aware of any unusual activity on my system(such as new admin accounts being made) or any malicious code being deployed on my system, helping me deploy effective counter measures if a breach were to occur.
+  * Backups are also integral. Allowing me to revert my machine to an earlier state, before the breach occurred. For example, if, while accessing the site, a hacker used the clear-text DNS to enact a DNS poisoning attack, in order to reroute my network traffic with faulty DNS replies, it could result in me being directed to malicious sites, causing my Windows machine to become infected with malware. With a backup once I am notified of this by Windows Defender, I have the option to completely roll back the system, keeping my computer safe from further infections as a result.
+  * Throughout this scenario I am gathering photographic evidence in the form of screenshots to help support the content laid out in this report. Within some of the raw screenshots was sensitive personal information that has been redacted to prevent a breach from occurring due to poorly managed information. 
 
 
 **3. Process**
