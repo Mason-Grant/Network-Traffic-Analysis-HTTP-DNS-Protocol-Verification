@@ -29,6 +29,7 @@ With this project, the aim is to capture and analyse the complete process of a w
 
 **4. Findings**
 * ***DNS Resolution*** I successfully captured the standard query for neverssl.com and the response, which linked the domain to the IPv6 address:" 2600:1f13:37c:1400:ba21:7165:5fc7:736e". Due to my Internet Service Provider, IPV4 addresses cannot be monitored using wireshark as all IPV4 requests go through my ISP and then my router, and so have a standard IP i.e "192.168.1.1". Thankfully, we can circumvent this issue with the use of IPV6 addresses. Using 'Nslookup' in Parrot, we can query the website and receive the correct IPv4/IPv6 address.
+   * This Dns query was captured in clear-text highlighting a massive security risk as a hacker can sniff this packet and would instantly see what website I am trying to access. Additionally, my IPv6 address would also be leaked meaning the hacker would then have the means to begin attacking my network via my IPv6 address being leaked. For a business this would pose a massive risk as one exposed Ip addressed could lead to an attacker breaching the network then moving laterally.
 * ***Transport*** Using Wireshark, I confirmed that a successful TCP handshake was occurring. I observed the correct incrementation of the sequence and acknowledgement numbers, proving a stable connection was present.
 * ***Transparency*** Due to the site utilizing HTTP(port 80) as opposed to the more secure HTTPS(Port 443) I was able to read all the raw data in clear-text, including HTTP headers and the server's 200 OK response.
 
